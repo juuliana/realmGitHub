@@ -37,8 +37,10 @@ function Main() {
     const realm = await getRealm();
 
     realm.write(() => {
-      realm.create('Repository', data);
+      realm.create('Repository', data, 'modified');
     });
+
+    return data;
   }
 
   async function handleAddRepository(){
@@ -53,7 +55,14 @@ function Main() {
     }catch(err){
       setError(true);
     }
+  }
 
+  async function handleRefreshRepository(repository){
+    const response = await api.get(`/repos/${repository.fullName}`);
+
+    const data = await saveRepository(response.data);
+
+    setRepositories(repositories.map(repo => (repo.id === data.id ? data : repo)));
   }
 
   return(
@@ -79,7 +88,7 @@ function Main() {
         data={repositories}
         keyExtractor={item => String(item.id)}
         renderItem={({ item }) => (
-          <Repository data={ item }/>
+          <Repository data={ item } onRefresh={() => handleRefreshRepository(item)}/>
         )}
       />
     </Container>
