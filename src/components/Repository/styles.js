@@ -9,8 +9,8 @@ export const Container = styled.View`
 
 export const Name = styled.Text`
     font-size: 18px;
-    font-weight: bold;
     color: #333;
+    font-weight: bold;
 `;
 
 export const Description = styled.Text.attrs({
